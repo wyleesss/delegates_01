@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 internal static class Program
@@ -8,8 +7,6 @@ internal static class Program
 
     public static string GetReformNameFromDate(string DateRequest)
     {
-        string ReformName = String.Empty;
-
         int day = int.Parse(DateRequest.Substring(0, DateRequest.IndexOf('-')));
         int month = int.Parse(DateRequest.Substring(DateRequest.IndexOf('-') + 1, DateRequest.Substring(DateRequest.IndexOf('-') + 1).IndexOf('-')));
 
@@ -33,17 +30,17 @@ internal static class Program
     }
 
     public static void DoWithReform(DReform Do, string ReformName) => Do(ReformName);
-    
 
     static void Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
+        ConsoleKeyInfo KeyInfo = new();
 
-        while (true)
+        while (KeyInfo.Key != ConsoleKey.Escape)
         {
             Console.Clear();
 
-            Console.Write("введіть дату (день-місяць-рік):\n\n-> ");
+            Console.Write("введіть дату (день-місяць-рік):\n-> ");
 
             string Input = new string(Console.ReadLine());
 
@@ -51,16 +48,19 @@ internal static class Program
 
             if (!regex.IsMatch(Input))
             {
-                Console.WriteLine("\nневірний формат дати");
-                Console.ReadKey();
+                Console.WriteLine("\n(!) невірний формат дати");
+                Console.WriteLine("\n\nESC - вихід");
+                KeyInfo = Console.ReadKey();
                 continue;
             }
 
-            Console.WriteLine("\n\nрезультат:\n");
+            Console.Write("\nрезультат\n=> ");
 
             DoWithReform(Console.WriteLine, GetReformNameFromDate(Input));
 
-            Console.ReadKey();
+            Console.WriteLine("\nESC - вихід");
+
+            KeyInfo = Console.ReadKey();
         }
     }
 }
